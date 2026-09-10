@@ -29,7 +29,6 @@ A federated learning method that uses Transformer attention statistics to guide 
   <i>In some cases, the client is useful, in others not, but FedAvg does not see this.</i>
 </p>
 
-<br>
 
 ## Propose approach
 
