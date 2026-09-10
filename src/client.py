@@ -59,7 +59,6 @@ def client_train_step(
     if prox_mu is not None and prox_mu > 0.0 and init_state is not None:
         global_params = {k: v.to(device) for k, v in init_state.items()}
 
-    # DataLoader
     dl = DataLoader(
         shard["data"],
         batch_size=batch_size,
