@@ -1,4 +1,4 @@
-<img width="1182" height="482" alt="image" src="https://github.com/user-attachments/assets/43c02dad-927a-4d82-855a-2240c7b28496" /># FedAttention Attention Statistic Weighting for Federated Learning.
+# FedAttention Attention Statistic Weighting for Federated Learning.
 A federated learning method that uses Transformer attention statistics to guide how client updates are aggregated under non-IID data.
 
 ## Problem statement
