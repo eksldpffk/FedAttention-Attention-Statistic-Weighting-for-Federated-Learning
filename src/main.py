@@ -25,9 +25,7 @@ EVAL_SNIPPETS = [
 
 
 def _compute_and_print_metrics(global_model):
-    """
-    Метрики считаются “best” модели. Если сеть умерла — НЕ роняем процесс.
-    """
+    # Если сеть умерла — НЕ роняем блять процесс, заебалась уже
     try:
         ppl = ppl_eval(global_model, EVAL_SNIPPETS, model_name=MODEL)
         print(f"[Eval] Global Val PPL={ppl:.2f}")
@@ -88,7 +86,6 @@ def run(
     prox_mu: float = 0.0,
     resume: bool = False,
 ):
-    # -------- device --------
     if device == "auto":
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -96,7 +93,6 @@ def run(
     if strategy.lower() in ("fedavg", "fedprox"):
         warmup_rounds = 0
 
-    # -------- clients (детерминированно) --------
     random.seed(seed)
     torch.manual_seed(seed)
     os.environ["PYTHONHASHSEED"] = str(seed)
@@ -111,12 +107,10 @@ def run(
     )
     random.Random(seed).shuffle(clients)
 
-    # -------- init model --------
     global_model = init_global(MODEL, device=device)
 
     best_path, last_path = _state_paths(strategy, seed)
 
-    # -------- resume --------
     start_round = 1
     best_ppl = 1e9
     best_sd = None
@@ -129,11 +123,9 @@ def run(
         best_ppl = float(st.get("best_ppl", 1e9))
         best_sd = st.get("best_sd", None)
 
-        # восстановим EMA для fedattention
         if strategy.lower() == "fedattention":
             set_fedattn_ema_state(st.get("fedattn_ema", None))
 
-        # восстановим RNG (чтобы “продолжение” было максимально идентичным)
         if "py_random_state" in st:
             random.setstate(st["py_random_state"])
         if "torch_random_state" in st:
@@ -141,16 +133,13 @@ def run(
 
         print(f"[Resume] loaded {last_path}. Continue from round {start_round}/{rounds}")
     else:
-        # если не resume — чистим EMA
         if strategy.lower() == "fedattention":
             set_fedattn_ema_state(None)
 
-    # -------- training loop --------
     for r in range(start_round, rounds + 1):
         start = (r - 1) * clients_per_round % len(clients)
         picked = clients[start:start + clients_per_round]
 
-        # snapshot global weights on CPU for clients
         global_sd_cpu = {k: v.detach().cpu() for k, v in global_model.state_dict().items()}
 
         client_states, client_stats, losses = [], [], []
@@ -173,14 +162,14 @@ def run(
         else:
             new_sd = fedattention(client_states, client_stats, global_model, round_idx=r)
 
-        # update global with momentum blending
+        # update global with momentum blending (here is mu, but in the readme its alpha on the last stage in aproache's discription)
         mu_blend = 0.3
         old = global_model.state_dict()
         for k in new_sd:
             new_sd[k] = mu_blend * old[k] + (1 - mu_blend) * new_sd[k]
         global_model.load_state_dict(new_sd, strict=False)
 
-        # round ppl (может упасть при плохом интернете — тогда не роняем раунд)
+        # round ppl (может упасть при плохом интернете - тогда не роняем раунд)
         try:
             ppl = ppl_eval(global_model, EVAL_SNIPPETS, model_name=MODEL)
         except Exception as e:
@@ -190,14 +179,12 @@ def run(
         mean_loss = sum(losses) / max(1, len(losses))
         print(f"[Round {r:02d}] strategy={strategy}  mean client loss={mean_loss:.3f}  Val PPL={ppl:.2f}")
 
-        # update best (и сохраняем best)
         if ppl < best_ppl:
             best_ppl = float(ppl)
             best_sd = {k: v.detach().cpu().clone() for k, v in global_model.state_dict().items()}
             torch.save(best_sd, best_path)
             print(f"[Best] updated at round {r:02d}: PPL={best_ppl:.2f} saved -> {best_path}")
 
-        # save LAST state after each round (для resume)
         payload = {
             "last_round": r,
             "global_sd": {k: v.detach().cpu().clone() for k, v in global_model.state_dict().items()},
@@ -211,13 +198,11 @@ def run(
 
         _save_last_state(last_path, payload)
 
-    # -------- restore best --------
     if os.path.exists(best_path):
         sd = torch.load(best_path, map_location=device)
         global_model.load_state_dict(sd, strict=False)
         print("[Best] restored best checkpoint from disk")
 
-    # -------- final metrics --------
     _compute_and_print_metrics(global_model)
     print(f"[Run finished] best={best_path} last={last_path}")
     return global_model
