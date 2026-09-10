@@ -60,7 +60,7 @@ With this approach, the model is:
 ## Results
 
 <p align="center">
-  <img src="assets/FL_results.png" widht="700">
+  <img src="assets/FL_results.png" widht="600">
 </p>
 
 1. **Global Performance:** FedAttention matches or slightly improves global PPL across all seeds.
