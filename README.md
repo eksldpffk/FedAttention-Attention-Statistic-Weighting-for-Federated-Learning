@@ -45,7 +45,7 @@ With this approach, the model is:
 
 <p>
   <img src="assets/FL_wf.png" align="right" width="300">
-  <br><br>
+  <br>
 
   Each client performs normal local training and also collects for each Transformer layer (l), attention head (h), and client (k) two signals are computed from the local attention statistics:
   <ul>
@@ -54,7 +54,7 @@ With this approach, the model is:
   </ul>
 
   The server combines these values into a per-layer score:
-  <b>S<sub>k</sub><sup>l</sup> = mean<sub>h</sub>(τ<sub>e</sub> · (1 / Entropy<sub>l,h,k</sub>) + τ<sub>s</sub> · Sparsity<sub>l,h,k</sub> </b>
+  <br><b>S<sub>k</sub><sup>l</sup> = mean<sub>h</sub>(τ<sub>e</sub> · (1 / Entropy<sub>l,h,k</sub>) + τ<sub>s</sub> · Sparsity<sub>l,h,k</sub> </b><br>
   And then converts the scores into layer-wise aggregation weights using softmax.
 
   Higher-weight client updates contribute more strongly to that attention layer, while the rest of the model is averaged normally.
