@@ -1,4 +1,3 @@
-# src/metrics.py
 from __future__ import annotations
 
 import math
@@ -11,12 +10,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from datasets import load_dataset, DownloadConfig
 
 
-# ---------- HF robustness ----------
 def safe_load_dataset(*args, retries: int = 3, sleep_s: float = 3.0, **kwargs):
-    """
-    Надёжная загрузка датасета (HuggingFace). Если сеть тупит — повторяем.
-    Если всё равно не получилось — пробрасываем исключение (его поймает main и не уронит тренировку).
-    """
     dl_cfg = kwargs.pop("download_config", None)
     if dl_cfg is None:
         dl_cfg = DownloadConfig(max_retries=10)
@@ -134,10 +128,7 @@ def attn_entropy_eval(
     num_texts: int = 128,
 ):
     """
-    ВАЖНО: создаём отдельную модель с attn_implementation="eager",
-    грузим state_dict глобальной модели и безопасно считаем attention entropy.
-    Это полностью убирает ошибку:
-      "output_attentions is not supported when using attn_implementation=sdpa"
+    Это если "output_attentions is not supported when using attn_implementation=sdpa" ебет мозги
     """
     tok = AutoTokenizer.from_pretrained(model_name)
     if tok.pad_token is None:
@@ -152,7 +143,6 @@ def attn_entropy_eval(
 
     device = global_model.device
 
-    # отдельная модель для attention
     try:
         m = AutoModelForCausalLM.from_pretrained(model_name, attn_implementation="eager").to(device)
     except TypeError:
