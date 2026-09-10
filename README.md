@@ -3,20 +3,18 @@ A federated learning method that uses Transformer attention statistics to guide 
 
 ## Problem statement
 
-**Federative learning** - this is a learning paradigm in which data remains locally with users (on devices), and only updates to model parameters are sent to the server. The server aggregates these updates and creates a new global model.
+**Federative learning** - this is a learning paradigm in which data remains locally with users (on devices), and only updates to model parameters are sent to the server. The server aggregates these updates and creates a new global model. <br>
 
 <p>
   <img src="assets/FL_cf_str.png" align="right" width="350">
-
-  
+<br>
   FL is widely used when data is distributed among clients, but in reality, the clients:
   <ul>
     <li> have different data domains (code, news, scientific texts, etc.) </li>
     <li> don't learn the same way </li>
     <li> produce models of different quality </li>
   </ul>
-
-  
+<br>
   However, FedAvg averages everyone equally, which results in:
   <ul>
     <li> loss of useful information </li>
@@ -26,12 +24,12 @@ A federated learning method that uses Transformer attention statistics to guide 
 </p>
 
 
-
+<br><br>
 <p align="center">
   <i>In some cases, the client is useful, in others not, but FedAvg does not see this.</i>
 </p>
 
-
+<br>
 
 ## Propose approach
 
