@@ -6,7 +6,7 @@ A federated learning method that uses Transformer attention statistics to guide 
 **Federative learning** - this is a learning paradigm in which data remains locally with users (on devices), and only updates to model parameters are sent to the server. The server aggregates these updates and creates a new global model.
 
 <p>
-  <img src="assets/FL_cf_str.png" align="right" widht="200">
+  <img src="assets/FL_cf_str.png" align="right" width="350">
   
   FL is widely used when data is distributed among clients, but in reality, the clients:
   <ul>
