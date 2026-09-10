@@ -7,6 +7,7 @@ A federated learning method that uses Transformer attention statistics to guide 
 
 <p>
   <img src="assets/FL_cf_str.png" align="right" width="350">
+
   
   FL is widely used when data is distributed among clients, but in reality, the clients:
   <ul>
@@ -14,6 +15,7 @@ A federated learning method that uses Transformer attention statistics to guide 
     <li> don't learn the same way </li>
     <li> produce models of different quality </li>
   </ul>
+
   
   However, FedAvg averages everyone equally, which results in:
   <ul>
@@ -23,9 +25,12 @@ A federated learning method that uses Transformer attention statistics to guide 
   </ul>
 </p>
 
+
+
 <p align="center">
   <i>In some cases, the client is useful, in others not, but FedAvg does not see this.</i>
 </p>
+
 
 
 ## Propose approach
