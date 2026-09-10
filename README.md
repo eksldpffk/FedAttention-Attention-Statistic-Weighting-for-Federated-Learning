@@ -44,7 +44,8 @@ With this approach, the model is:
 - more adaptive
 
 <p>
-  <img src="assets/FL_wf.png" align="right" width="250">
+  <img src="assets/FL_wf.png" align="right" width="300">
+  <br><br>
 
   Each client performs normal local training and also collects for each Transformer layer (l), attention head (h), and client (k) two signals are computed from the local attention statistics:
   <ul>
