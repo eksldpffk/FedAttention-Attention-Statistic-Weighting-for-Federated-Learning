@@ -44,34 +44,13 @@ With this approach, the model is:
 <p>
   <img src="assets/FL_wf.png" align="right" width="400">
 
-  Each client performs normal local training and also collects for each Transformer layer, attention head, and client, two signals are computed from the local attention statistics:
+  Each client performs normal local training and also collects for each Transformer layer (l), attention head (h), and client (k) two signals are computed from the local attention statistics:
   <ul>
     <li><b>Attention entropy:</b> H = -Σ A log A</li>
     <li><b>Attention sparsity:</b> S = (1/N) Σ I(A ≤ ε)</li>
   </ul>
 
-  The server combines these values into a per-layer score <math display="block">
-        <msubsup><mi>S</mi><mi>k</mi><mrow><mo>(</mo><mi>l</mi><mo>)</mo></mrow></msubsup>
-        <mo>=</mo>
-        <mfrac><mn>1</mn><mi>H</mi></mfrac>
-        <munderover>
-            <mo>&sum;</mo>
-            <mrow><mi>h</mi><mo>=</mo><mn>1</mn></mrow>
-            <mi>H</mi>
-        </munderover>
-        <msub><mo>&tau;</mo><mi>e</mi></msub>
-        <mo>*</mo>
-        <mfrac>
-            <mn>1</mn>
-            <msub><mi>Entrophy</mi><mrow><mi>l</mi><mo>,</mo><mi>h</mi><mo>,</mo><mi>k</mi></mrow></msub>
-        </mfrac>
-        <mo>+</mo>
-        <msub><mo>&tau;</mo><mi>s</mi></msub>
-        <mo>*</mo>
-        <msub><mi>Sparsity</mi><mrow><mi>l</mi><mo>,</mo><mi>h</mi><mo>,</mo><mi>k</mi></mrow></msub>
-    </math>
-  
-  <b>S<sub>k</sub><sup>1</sup> = mean<sub>h</sub>(τ<sub>e</sub> 1 / Entropy + τ<suv>s</sub> · Sparsity)</b> and converts the scores into layer-wise aggregation weights using softmax.
+  The server combines these values into a per-layer score <b>S<sub>k</sub><sup>l</sup> = mean<sub>h</sub>(τ<sub>e</sub>(1 / Entropy<sub>l,h,k</sub>) + τ<sub>s</sub> · Sparsity<sub>l,h,k</sub> </b> and converts the scores into layer-wise aggregation weights using softmax.
 
   Higher-weight client updates contribute more strongly to that attention layer, while the rest of the model is averaged normally.
 </p>
