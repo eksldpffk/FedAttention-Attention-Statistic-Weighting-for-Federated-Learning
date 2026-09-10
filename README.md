@@ -50,7 +50,7 @@ With this approach, the model is:
     <li><b>Attention sparsity:</b> S = (1/N) Σ I(A ≤ ε)</li>
   </ul>
 
-  The server combines these values into a per-layer score <b>S<sub>k</sub><sup>l</sup> = mean<sub>h</sub>(τ<sub>e</sub>(1 / Entropy<sub>l,h,k</sub>) + τ<sub>s</sub> · Sparsity<sub>l,h,k</sub> </b> and converts the scores into layer-wise aggregation weights using softmax.
+  The server combines these values into a per-layer score <b>S<sub>k</sub><sup>l</sup> = mean<sub>h</sub>(τ<sub>e</sub> · (1 / Entropy<sub>l,h,k</sub>) + τ<sub>s</sub> · Sparsity<sub>l,h,k</sub> </b> and converts the scores into layer-wise aggregation weights using softmax.
 
   Higher-weight client updates contribute more strongly to that attention layer, while the rest of the model is averaged normally.
 </p>
